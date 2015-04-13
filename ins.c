@@ -28,6 +28,20 @@ struct field_group {
 
 static const struct field_group fields[] = {
 
+	FIELD_START(up)
+		FIELD("DATA1",6,1)
+		FIELD("CMD1",5,1)
+		FIELD("COM1",4,1)
+		FIELD("DATA0",3,1)
+		FIELD("CMD0",2,1)
+		FIELD("COM0",1,1)
+	FIELD_END
+
+	FIELD_START(drv)
+	FIELD("MSHC1",6,2)
+	FIELD("MSHC0",4,2)
+	FIELD_END
+
 	FIELD_START(ctrl)
 	FIELD("CONTROLLE_RESET",0,1)
 	FIELD("FIFO_RESET",1,1)
@@ -79,6 +93,74 @@ static const struct field_group fields[] = {
 	FIELD("START_CMD", 31, 1)
 	FIELD_END
 
+	FIELD_START(status)
+	FIELD("FIFO_RX_WATERMARK",0,1)
+	FIELD("FIFO_TX_WATER",1,1)
+	FIELD("FIFO_EMPTY",2,1)
+	FIELD("FIFO_FULL",3,1)
+	FIELD("COMMAND_FSM_STATES",4,4)
+	FIELD("DATA_3_STATUS",8,1)
+	FIELD("DATA_BUSY",9,1)
+	FIELD("DATA_STATE_MC_BUSY",10,1)
+	FIELD("RESPONSE_INDEX",11,6)
+	FIELD("FIFO_COUNT",17,13)
+	FIELD_END
+
+	FIELD_START(bmod)
+	FIELD("SWR",0,1)
+	FIELD("FB",1,1)
+	FIELD("DSL",2,5)
+	FIELD("DE",7,1)
+	FIELD("PBL",8,3)
+	FIELD_END
+
+	FIELD_START(des0)
+	FIELD("OWN",31,1)
+	FIELD("CES",30,1)
+	FIELD("ER",5,1)
+	FIELD("CH",4,1)
+	FIELD("FS",3,1)
+	FIELD("LD",2,1)
+	FIELD("DIC",1,1)
+	FIELD_END
+
+	FIELD_START(des1)
+	FIELD("BUFFER1SIZE",0,13)
+	FIELD("BUFFER2SIZE",13,13)
+	FIELD_END
+
+
+	FIELD_START(fifoth)
+	FIELD("TX_WATERMARK",0,12)
+	FIELD("RX_WATERMARK",16,12)
+	FIELD("DMA MULTIPLE", 28, 3)
+	FIELD_END
+
+	FIELD_START(irqs)
+	FIELD("cd (card detect)", 0,1)
+	FIELD("re",1,1)
+	FIELD("cd (command done)",2,1)
+	FIELD("dto",3,1)
+	FIELD("txdr",4,1)
+	FIELD("rxdr",5,1)
+	FIELD("rcrc",6,1)
+	FIELD("dcrc",7,1)
+	FIELD("rto/bar",8,1)
+	FIELD("bds",9,1)
+	FIELD("hto",10,1)
+	FIELD("frun",11,1)
+	FIELD("hle",12,1)
+	FIELD("sbe",13,1)
+	FIELD("acd",14,1)
+	FIELD("ebe",15,1)
+	FIELD("sdio",16,1)
+	FIELD_END
+
+	FIELD_START(pads)
+	FIELD("MSHC0",10,1)
+	FIELD("MSHC1",11,1)
+	FIELD_END
+
 	{ NULL, NULL }
 };
 
@@ -109,7 +191,14 @@ int main(int n, char** a)
 			num_t = num;
 			num_t >>= f->of;
 			num_t &= (1 << f->mask) - 1;
-			printf("%s : %08X\n", f->name, num_t);
+			
+			if(!num_t)
+				printf("%s[%d-%d]: %d [0x%X] \n", f->name, f->of + f->mask - 1, f->of, num_t, num_t);
+			else
+				printf("\033[1m\033[37m%s[%d-%d]: %d [0x%X] \033[0m\n", f->name, f->of + f->mask - 1, f->of, num_t, num_t);
+
+			
+
 			f++;
 		}
 
