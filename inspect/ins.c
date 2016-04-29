@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define FIELDN(x,y) { \
+	.name = x, \
+	.of = -1,\
+	.mask = y },
+
 #define FIELD(x,y,z) { \
 	.name = x, \
 	.of = y, \
@@ -17,16 +22,16 @@
 
 struct field {
 	const char* name;
-	const int of;
+	int of;
 	const int mask;
 };
 
 struct field_group {
 	const char *name;
-	const struct field *f;
+	struct field *f;
 };
 
-static const struct field_group fields[] = {
+static struct field_group fields[] = {
 
 	FIELD_START(up)
 		FIELD("DATA1",6,1)
@@ -161,6 +166,41 @@ static const struct field_group fields[] = {
 	FIELD("MSHC1",11,1)
 	FIELD_END
 
+	FIELD_START(dwc)
+		FIELDN("curmode",1)
+		FIELDN("modemismatch",1)
+		FIELDN("otgintr",1)
+		FIELDN("sofintr",1)
+		FIELDN("rxstsqlvl",1)
+		FIELDN("nptxfempty",1)
+		FIELDN("ginnakeff",1)
+		FIELDN("goutnakeff",1)
+		FIELDN("ulpickint",1)
+		FIELDN("i2cintr",1)
+		FIELDN("erlysuspend",1)
+		FIELDN("usbsuspend",1)
+		FIELDN("usbreset",1)
+		FIELDN("enumdone",1)
+		FIELDN("isooutdrop",1)
+		FIELDN("eopframe",1)
+		FIELDN("restoredone",1)
+		FIELDN("epmismatch",1)
+		FIELDN("inepint",1)
+		FIELDN("outepintr",1)
+		FIELDN("incomplisoin",1)
+		FIELDN("incomplisoout",1)
+		FIELDN("fetsusp",1)
+		FIELDN("resetdet",1)
+		FIELDN("portintr",1)
+		FIELDN("hcintr",1)
+		FIELDN("ptxfempty",1)
+		FIELDN("lpmtranrcvd",1)
+		FIELDN("conidstschng",1)
+		FIELDN("disconnect",1)
+		FIELDN("sessreqintr",1)
+		FIELDN("wkupintr",1)
+	FIELD_END
+
 	{ NULL, NULL }
 };
 
@@ -168,10 +208,36 @@ static const struct field_group fields[] = {
 int main(int n, char** a)
 {
 
-	const struct field_group *fg = fields;
-	const struct field *f = NULL;
+	struct field_group *fg = fields;
+	struct field *f = NULL;
+	const char *name;
 	unsigned int num_t;
 	unsigned int num, ar;
+	int x;
+
+	/* Process aggregate ones */
+	for( fg = fields; fg->name; fg++ )
+	{
+
+		x=0;
+
+		for( f = fg->f; f->name; f++ )
+		{
+			if(f->of != -1)
+				continue;
+
+			if(f == fg->f)
+				f->of = 0;
+			else
+			{
+				f->of = f[-1].of + f[-1].mask;
+				//printf("Set %s[%d]\n", f->name, f->of);
+			}
+		}
+
+	}
+
+	fg = fields;
 
 	if(n==3){
 
