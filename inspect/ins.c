@@ -237,15 +237,12 @@ int main(int n, char** a)
 
 	}
 
-	fg = fields;
-
 	if(n==3){
-
-		while( fg->name && strcmp(fg->name, a[1]) != 0 )
-			fg++;
+		
+		for( fg = fields; fg->name && strcmp(fg->name, a[1]); fg++)
 
 		if(!fg->name)
-			return printf("Not found %s.\n", a[1]), 1;
+			return printf("Not found %s.\n", a[1]);
 
 		f = fg->f;
 
@@ -271,7 +268,7 @@ int main(int n, char** a)
 
 	}
 	else
-		for(;fg->name;fg++)
+		for(fg = fields;fg->name;fg++)
 			printf("Options for %s.\n", fg->name);
 
 	return 0;	
