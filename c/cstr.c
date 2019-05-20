@@ -34,17 +34,6 @@ void cstr_free( const cstr str )
     free(str);
 }
 
-/*
- * Takes an array of pointer-to-cstr and fills each successive
- * entry in that array with a pointer to a new cstr that is created
- * from tokens found in "_str" of the kids specified by "toks"
- *
- * Quits on the first NULL pointer-to-cstr in the array - this acts
- * as a natural way to cut processing.
- *
- * TODO: Have max num as separate arg and use MACROs to derive the
- * array size automatically
- */
 void _tokenize( const cstr _str, const cstr toks, cstr** arr )
 {
     cstr str = strdup(_str);
@@ -76,15 +65,16 @@ cstr cstridx( cstr str, int32_t idx )
     return str + idx;
 }
 
-cstr fgetline( FILE* fp, size_t* len )
+/*
+ * Read a line at a time from the file pointer.
+ */
+cstr fgetline_r( FILE* fp, size_t* len, void* linebuf, size_t linesz )
 {
-#define FLINE_MAX (1024) 
-    static char linebuf[FLINE_MAX];
+    size_t sz = 0;
 
     dprintf("**GETLINE Start..\n");
 
-    cstr ret = fgets( linebuf, FLINE_MAX, fp );
-    size_t sz = 0;
+    cstr ret = fgets( linebuf, linesz, fp );
 
     if(ret)
     {

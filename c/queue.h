@@ -12,8 +12,6 @@ typedef struct q_config {
 }q_config;
 
 #define QLFN( func ) (lostfn*)func
-
-
 #define QARGS(...) (q_config){ .size = 8, .timeout = 0, __VA_ARGS__ }
 
 q_handle* q_new( const q_config *config );
