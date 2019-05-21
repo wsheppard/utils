@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <regex.h>
+#include <string.h>
 
 /*
  * MACRO helper - return "a" if "a" is NOT NULL.
@@ -55,12 +56,20 @@ static inline void* _alloc_or_die( size_t size)
  * Helper MACRO to create pointer-to-type with name "name"
  * and allocate or die ( abort )
  */
-#define gen_alloc(name,type) type *name = _alloc_or_die( sizeof( type ) ) 
+#define gen_allocm(name,type,size) type *name = _alloc_or_die( size ) 
+#define gen_alloca(name,type,num) gen_allocm( name, type, sizeof(type) * num )
+#define gen_alloc(name,type) gen_alloca(name,type,1)
 
 /*
  * strdup wrapper which aborts() on fail
  */
-#define cstrdup(str) _alloc_or_die( strlen(str) + 1 )
+static inline cstr cstrdup( const char* _str)
+{
+    cstr str = _alloc_or_die ( strlen(_str) + 1 );
+    return strcpy( str, _str );
+}
+
+#define CSTR(str) cstrdup(str)
 
 /*
  * Create cstr with "name" and size "size". Abort on allocation failure 

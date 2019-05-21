@@ -4,7 +4,7 @@
 #include "cstr.h"
 
 #undef DEBUG
-//#define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 #define dprintf(...) printf( __VA_ARGS__ )
