@@ -1,0 +1,44 @@
+# ignore all files without a dot in them
+# e.g. output executables
+*
+!*.*
+
+# don't ignore directories (git sees them ending in /)
+!*/
+
+# don't ignore makefiles
+!makefile*
+
+#all object files.
+*.o
+
+#all static lib files.
+*.a
+
+#dynamic libraries
+*.so
+
+#dependency files
+*.d
+*.P
+
+#.bin files
+*.bin
+
+# backup files
+*.orig
+*.bak
+
+# Eclipse workspace
+.metadata/
+.settings/
+RemoteSystemsTempFiles/
+
+# Ignore vim swap files
+.*.swp
+
+# Ignore the ham config chosen and copied before installation
+ham/ham.cfg
+
+.objs/
+tags
